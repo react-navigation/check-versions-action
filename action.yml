@@ -1,0 +1,32 @@
+name: 'Check versions'
+description: 'Check for missing or outdated versions of packages mentioned in the issue'
+author: 'Satyajit Sahoo'
+
+branding:
+  icon: 'alert-triangle'
+  color: 'orange'
+
+inputs:
+  github-token:
+    description: The `GITHUB_TOKEN` secret.
+    required: true
+  packages:
+    description: 'List of packages to check for'
+    required: true
+  comment:
+    description: 'Whether to comment on the issue when missing or outdated versions are found'
+    default: true
+  missing-versions-label:
+    description: 'Label to add when missing or outdated versions are found'
+
+outputs:
+  found:
+    description: 'Packages and version numbers found'
+  outdated:
+    description: 'Packages with outdated versions and their latest versions'
+  missing:
+    description: 'Packages missing version numbers'
+
+runs:
+  using: 'node12'
+  main: 'src/index.js'
