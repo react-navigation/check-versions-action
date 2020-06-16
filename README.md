@@ -25,7 +25,7 @@ jobs:
       - uses: react-navigation/check-versions-action@v1
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          packages: |
+          optional-packages: |
             @react-navigation/native
             @react-navigation/stack
           missing-versions-label: 'needs more info'
@@ -39,9 +39,13 @@ Make sure to change the `packages` list and the `missing-versions-label`.
 
 The `GITHUB_TOKEN` secret. This is needed so that we can post comments on the issue.
 
-### `packages` (`required`)
+### `required-packages`
 
-List of packages to check for. The action will match the content of the issue against these package names to find mentioned versions. If there are packages present in the issue, but not mentioned in this list, then they will be ignored.
+List of required packages to check for. The action will match the content of the issue against these package names to find mentioned versions. If the packages are not mentioned or their version is not mentioned in the issue, the action will mark them as missing.
+
+### `optional-packages`
+
+List of optional packages to check for. The action will match the content of the issue against these package names to find mentioned versions. If there are packages present in the issue, but not mentioned in this list, then they will be ignored.
 
 ### `comment`
 

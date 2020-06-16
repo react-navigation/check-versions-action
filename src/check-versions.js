@@ -6,14 +6,21 @@ const REGISTRY = 'https://registry.npmjs.org';
  * Check package versions in the markdown content
  *
  * @param {string} body
- * @param {string[]} packages
+ * @param {string[]} optionalPackages
+ * @param {string[]} requiredPackages
  */
-async function checkVersions(body, packages) {
+async function checkVersions(body, optionalPackages, requiredPackages) {
   const lines = body.split('\n');
 
+  const missing = requiredPackages.reduce((acc, curr) => {
+    acc[curr] = true;
+    return acc;
+  }, {});
+
   const found = {};
-  const missing = {};
   const outdated = {};
+
+  const packages = [...requiredPackages, ...optionalPackages];
 
   for (const line of lines) {
     for (const p of packages) {
@@ -30,8 +37,8 @@ async function checkVersions(body, packages) {
           if (parts[i] === p) {
             // Strip semver symbols and v prefix
             const version = parts[i + 1]
-              .replace(/^v/, '')
-              .replace(/[\^\~]/, '');
+              ? parts[i + 1].replace(/^v/, '').replace(/[\^\~]/, '')
+              : undefined;
 
             // Check if version matches the proper format
             if (version && /^\d+\.\d+\.\d+/.test(version)) {
