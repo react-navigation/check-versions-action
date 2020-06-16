@@ -10,9 +10,10 @@ inputs:
   github-token:
     description: The `GITHUB_TOKEN` secret.
     required: true
-  packages:
-    description: 'List of packages to check for'
-    required: true
+  required-packages:
+    description: 'List of optional packages to check for'
+  optional-packages:
+    description: 'List of optional packages to check for'
   comment:
     description: 'Whether to comment on the issue when missing or outdated versions are found'
     default: true

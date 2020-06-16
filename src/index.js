@@ -10,21 +10,25 @@ const checkVersions = require('./check-versions');
       core.getInput('github-token', { required: true })
     );
 
-    const packages = core
-      .getInput('packages', { required: true })
+    const optionalPackages = (core.getInput('optional-packages') || '')
+      .split(/\r?\n/)
+      .map((p) => p.trim());
+
+    const requiredPackages = (core.getInput('required-packages') || '')
       .split(/\r?\n/)
       .map((p) => p.trim());
 
     const { found, missing, outdated } = await checkVersions(
       payload.issue.body,
-      packages
+      optionalPackages,
+      requiredPackages
     );
 
     const messages = [];
 
     if (Object.keys(missing).length) {
       messages.push(
-        `Found the following packages mentioned in the issue, but couldn't find version numbers for them:
+        `Couldn't find version numbers for the following packages in the issue:
 ${Object.keys(missing)
   .map((p) => `- \`${p}\``)
   .join('\n')}
@@ -84,6 +88,7 @@ Can you verify that the issue still exists after upgrading to the latest version
 
     core.setOutput('missing', Object.keys(missing).join(','));
   } catch (e) {
-    core.setFailed(error.message);
+    console.log(e);
+    core.setFailed(e.message);
   }
 })();
