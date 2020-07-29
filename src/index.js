@@ -52,12 +52,22 @@ Can you verify that the issue still exists after upgrading to the latest version
       const comment = core.getInput('comment');
 
       if (comment !== false) {
-        await client.issues.createComment({
+        const comments = await client.issues.listComments({
           owner: issue.owner,
           repo: issue.repo,
           issue_number: issue.number,
-          body: messages.join('\n\n'),
         });
+
+        const body = messages.join('\n\n');
+
+        if (!comments.data.some(comment => comment.body === body)) {
+          await client.issues.createComment({
+            owner: issue.owner,
+            repo: issue.repo,
+            issue_number: issue.number,
+            body,
+          });
+        }
       }
 
       const missingVersionsLabel = core.getInput('missing-versions-label');
