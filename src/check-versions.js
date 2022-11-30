@@ -1,4 +1,5 @@
 const fetch = require('node-fetch');
+const escape = require('escape-string-regexp');
 
 const REGISTRY = 'https://registry.npmjs.org';
 
@@ -24,7 +25,11 @@ async function checkVersions(body, optionalPackages, requiredPackages) {
 
   for (const line of lines) {
     for (const p of packages) {
-      if (line.includes(p)) {
+      if (
+        line.includes(p) &&
+        // If the package is part of a checklist, ignore if unchecked (e.g. `- [ ] package-name`)
+        !new RegExp(`^(-|\\*)\\s+\\[\\s\\]\\s+${escape(p)}$`).test(line.trim())
+      ) {
         const parts = line
           // Get the version number from the version table or from package.json lines
           .replace(/[\|\s":,]+/g, ' ')
