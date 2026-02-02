@@ -9,9 +9,9 @@ const REGISTRY = 'https://registry.npmjs.org';
  * @param {string} body
  * @param {string[]} optionalPackages
  * @param {string[]} requiredPackages
- * @param {string} tags
+ * @param {string[]} tags
  */
-async function checkVersions(body, optionalPackages, requiredPackages, tags = 'latest') {
+async function checkVersions(body, optionalPackages, requiredPackages, tags = ['latest']) {
   const lines = body.split('\n');
 
   const missing = requiredPackages.reduce((acc, curr) => {
@@ -83,10 +83,15 @@ async function checkVersions(body, optionalPackages, requiredPackages, tags = 'l
     const meta = await response.json();
 
     if (meta.versions) {
-      const latest = meta['dist-tags'] ? meta['dist-tags'][tags] : null;
+      const distTags = meta['dist-tags'];
 
-      if (latest !== found[p]) {
-        outdated[p] = latest;
+      if (distTags) {
+        const isUpToDate = tags.some(tag => distTags[tag] === found[p]);
+
+        if (!isUpToDate) {
+          // Use the first tag as the reference for the latest version
+          outdated[p] = distTags[tags[0]];
+        }
       }
     }
   }
