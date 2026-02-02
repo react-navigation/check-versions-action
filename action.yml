@@ -14,6 +14,9 @@ inputs:
     description: 'List of optional packages to check for'
   optional-packages:
     description: 'List of optional packages to check for'
+  tags:
+    description: 'The dist-tag to use when checking for latest version from npm'
+    default: 'latest'
   comment:
     description: 'Whether to comment on the issue when missing or outdated versions are found'
     default: true

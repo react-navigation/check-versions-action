@@ -18,10 +18,13 @@ const checkVersions = require('./check-versions');
       .split(/\r?\n/)
       .map((p) => p.trim());
 
+    const tags = core.getInput('tags') || 'latest';
+
     const { found, missing, outdated } = await checkVersions(
       payload.issue.body,
       optionalPackages,
-      requiredPackages
+      requiredPackages,
+      tags
     );
 
     const messages = [];
